@@ -1,0 +1,37 @@
+{
+    "name": "SmartBlinds",
+    "docs": "https://github.com/therealmysteryman/udi-MySmartBlinds-nodeserver/blob/master/README.md",
+    "type": "python3",
+    "executable": "blinds_poly.py",
+    "install": "install.sh",
+    "shortPoll": "60",
+    "longPoll": "300",
+    "description": "Connect SmartBlinds to the ISY994.",
+    "notice": "https://github.com/therealmysteryman/udi-MySmartBlinds-nodeserver/blob/master/LICENSE",
+    "credits": [
+        {
+            "title": "SmartBlinds: A Polyglot v2 interface to SmartBlinds",
+            "author": "AutomationGeek",
+            "version": "2.0.0",
+            "date": "January 9, 2021",
+            "source": "https://github.com/therealmysteryman/udi-MySmartBlinds-nodeserver",
+            "license": "https://github.com/therealmysteryman/udi-MySmartBlinds-nodeserver/blob/master/README.md"
+        },
+	{
+            "title": "udi-poly-template-python: A Polyglot v2 Poly template",
+            "author": "James Milne (Einstein.42)",
+            "version": "2.0.0",
+            "date": "November 8, 2017",
+            "source": "https://github.com/Einstein42/udi-poly-template-python",
+            "license": "https://raw.githubusercontent.com/Einstein42/udi-poly-template-python/master/LICENSE"
+        },
+	{
+            "title": "smartblinds-client",
+            "author": "ianlevesque",
+            "version": "0.0.6",
+            "date": "October 31, 2020",
+            "source": "https://github.com/ianlevesque/smartblinds-client",
+            "license": "https://github.com/ianlevesque/smartblinds-client/blob/main/LICENSE"
+        }
+    ]
+}
