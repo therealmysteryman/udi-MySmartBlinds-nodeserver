@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-This is a NodeServer for August written by automationgeek (Jean-Francois Tremblay)
+This is a NodeServer for SmartBlinds written by automationgeek (Jean-Francois Tremblay)
 based on the NodeServer template for Polyglot v2 written in Python2/3 by Einstein.42 (James Milne) milne.james@gmail.com
 """
 
@@ -11,9 +11,7 @@ import time
 import json
 import sys
 from copy import deepcopy
-from august.api import Api 
-from august.authenticator import Authenticator, AuthenticationState
-from august.lock import LockDetail, LockDoorStatus, LockStatus
+from smartblinds_client import SmartBlindsClient
 
 
 LOGGER = polyinterface.LOGGER
@@ -35,17 +33,16 @@ class Controller(polyinterface.Controller):
 
     def __init__(self, polyglot):
         super(Controller, self).__init__(polyglot)
-        self.name = 'August'
+        self.name = 'Blinds'
         self.initialized = False
         self.queryON = False
         self.email = ""
         self.password = ""
-        self.install_id = ""
         self.tries = 0
         self.hb = 0
 
     def start(self):
-        LOGGER.info('Started August for v2 NodeServer version %s', str(VERSION))
+        LOGGER.info('Started Blinds for v2 NodeServer version %s', str(VERSION))
         self.setDriver('ST', 0)
         try:
             if 'email' in self.polyConfig['customParams']:
@@ -58,14 +55,8 @@ class Controller(polyinterface.Controller):
             else:
                 self.password = ""
             
-            # Generate a UUID ( 11111111-1111-1111-1111-111111111111 )
-            if 'install_id' in self.polyConfig['customParams']:
-                self.install_id = self.polyConfig['customParams']['install_id']
-            else:
-                self.install_id = "" 
-
-            if self.email == "" or self.password == "" or self.install_id == "":
-                LOGGER.error('August requires email,password,install_id parameters to be specified in custom configuration.')
+            if self.email == "" or self.password == "" :
+                LOGGER.error('Blinds requires email, password, parameters to be specified in custom configuration.')
                 return False
             else:
                 self.check_profile()
@@ -73,7 +64,7 @@ class Controller(polyinterface.Controller):
                 self.query()
 
         except Exception as ex:
-            LOGGER.error('Error starting August NodeServer: %s', str(ex))
+            LOGGER.error('Error starting Blinds NodeServer: %s', str(ex))
            
     def shortPoll(self):
         self.query()
@@ -100,20 +91,18 @@ class Controller(polyinterface.Controller):
     def discover(self, *args, **kwargs):
         count = 1
         
-        api = Api(timeout=20)
-        authenticator = Authenticator(api, "email", self.email, self.password, install_id=self.install_id, access_token_cache_file="/var/polyglot/nodeservers/AugustLock/augustToken.txt")
-        authentication = authenticator.authenticate()
-        if ( authentication.state is AuthenticationState.AUTHENTICATED ) :
-            locks = api.get_locks(authentication.access_token)
-            for lock in locks:
-                myhash =  str(int(hashlib.md5(lock.device_id.encode('utf8')).hexdigest(), 16) % (10 ** 8))
-                self.addNode(AugustLock(self,self.address,myhash,  "lock_" + str(count),api, authentication, lock ))
-                count = count + 1
-        else :
-            LOGGER.error('August requires validation, please manually create your augustToken')
+        client = SmartBlindsClient(self.email,self.password)
+        client.login()
+
+        blinds, rooms = client.get_blinds_and_rooms()
+        
+        for blinds in blind:
+            myhash =  str(int(hashlib.md5(blind.name.encode('utf8')).hexdigest(), 16) % (10 ** 8))
+            self.addNode(Blind(self,self.address,myhash,  "blind_" + str(count), client, blind, blinds ))
+            count = count + 1
         
     def delete(self):
-        LOGGER.info('Deleting August')
+        LOGGER.info('Deleting Blinds')
 
     def check_profile(self):
         self.profile_info = get_profile_info(LOGGER)
@@ -143,42 +132,39 @@ class Controller(polyinterface.Controller):
     }
     drivers = [{'driver': 'ST', 'value': 1, 'uom': 2}]
 
-class AugustLock(polyinterface.Node):
+class Blind(polyinterface.Node):
 
-    def __init__(self, controller, primary, address, name, api, authentication, lock):
+    def __init__(self, controller, primary, address, name, client, blind, blinds):
 
         super(AugustLock, self).__init__(controller, primary, address, name)
         self.queryON = True
-        self.api = api
-        self.authentication = authentication
-        self.lock = lock
+        self.client = client
+        self.blind = blind
+        self.blinds = blinds
 
     def start(self):
         self.query()
 
     def setOn(self, command):
-        self.api.lock(self.authentication.access_token,self.lock.device_id)
+        self.client.set_blinds_position(self.blind, 100)
         self.setDriver('ST', 100,True)
         
     def setOff(self, command):
-        self.api.unlock(self.authentication.access_token,self.lock.device_id)
+        self.client.set_blinds_position(self.blind, 0)
         self.setDriver('ST', 0,True)
       
     def query(self):
-        if self.api.get_lock_status(self.authentication.access_token,self.lock.device_id) is LockStatus.LOCKED :
+        states = self.client.get_blinds_state(self.blinds)
+        open = states[blinds[0].encoded_mac].position
+        
+        if open > 1 :
             self.setDriver('ST', 100,True) 
         else :
             self.setDriver('ST', 0,True) 
         
-        battlevel = self.api.get_lock_detail(self.authentication.access_token,self.lock.device_id).battery_level
-        self.setDriver('GV1', int(battlevel) , True)
-        
-        #lastUser = self.api.get_house_activities(self.authentication.access_token,self.lock.house_id)[0].operated_by
-                        
-    drivers = [{'driver': 'ST', 'value': 0, 'uom': 11},
-               {'driver': 'GV1', 'value': 0, 'uom': 51}]
+    drivers = [{'driver': 'ST', 'value': 0, 'uom': 56}]
 
-    id = 'AUGUST_LOCK'
+    id = 'BLINDS'
     commands = {
                     'DON': setOn,
                     'DOF': setOff
@@ -186,7 +172,7 @@ class AugustLock(polyinterface.Node):
 
 if __name__ == "__main__":
     try:
-        polyglot = polyinterface.Interface('AugustNodeServer')
+        polyglot = polyinterface.Interface('BlindsNodeServer')
         polyglot.start()
         control = Controller(polyglot)
         control.runForever()
