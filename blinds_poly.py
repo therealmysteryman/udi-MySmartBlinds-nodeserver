@@ -96,7 +96,7 @@ class Controller(polyinterface.Controller):
 
         blinds, rooms = client.get_blinds_and_rooms()
         
-        for blinds in blind:
+        for blind in blinds:
             myhash =  str(int(hashlib.md5(blind.name.encode('utf8')).hexdigest(), 16) % (10 ** 8))
             self.addNode(Blind(self,self.address,myhash,  "blind_" + str(count), client, blind, blinds ))
             count = count + 1
