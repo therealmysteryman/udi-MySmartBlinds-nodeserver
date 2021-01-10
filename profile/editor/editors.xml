@@ -6,7 +6,7 @@
     </editor>
 
     <editor id="blindpos">
-        <range uom="56" min="1" max="255" prec="0" step="1" />
+        <range uom="79" subset="0,100,101" />
     </editor>
         
 </editors>
