@@ -1,8 +1,8 @@
 # controller
 ST-controller-ST-NAME = Connected
 
-ND-BLINDS-NAME = SmartBlinds
-ND-BLINDS-ICON = Switch
+ND-SMART_BLINDS-NAME = SmartBlinds
+ND-SMART_BLINDS-ICON = Switch
 ND-controller-NAME = SmartBlinds Controller
 ND-controller-ICON = GenericCtl
 CMD-DISCOVER-NAME = Discover
