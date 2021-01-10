@@ -100,7 +100,7 @@ class Controller(polyinterface.Controller):
             myhash =  str(int(hashlib.md5(blind.name.encode('utf8')).hexdigest(), 16) % (10 ** 8))   
             myBlind = []
             myBlind.append(blind)
-            self.addNode(Blind(self,self.address,myhash,  "blind_" + str(count), client, blind ))
+            self.addNode(Blind(self,self.address,myhash,  "blind_" + str(count), client, myBlind ))
             count = count + 1
         
     def delete(self):
@@ -157,14 +157,14 @@ class Blind(polyinterface.Node):
       
     def query(self):
         states = self.client.get_blinds_state(self.blind)
-        open = states[blind[0].encoded_mac].position
+        open = states[self.blind[0].encoded_mac].position
         
         if open > 1 :
             self.setDriver('ST', 100,True) 
         else :
             self.setDriver('ST', 0,True) 
         
-    drivers = [{'driver': 'ST', 'value': 0, 'uom': 56}]
+    drivers = [{'driver': 'ST', 'value': 0, 'uom': 79}]
 
     id = 'SMART_BLINDS'
     commands = {
