@@ -136,7 +136,7 @@ class Blind(polyinterface.Node):
 
     def __init__(self, controller, primary, address, name, client, blind, blinds):
 
-        super(AugustLock, self).__init__(controller, primary, address, name)
+        super(Blind, self).__init__(controller, primary, address, name)
         self.queryON = True
         self.client = client
         self.blind = blind
@@ -164,7 +164,7 @@ class Blind(polyinterface.Node):
         
     drivers = [{'driver': 'ST', 'value': 0, 'uom': 56}]
 
-    id = 'BLINDS'
+    id = 'SMART_BLINDS'
     commands = {
                     'DON': setOn,
                     'DOF': setOff
