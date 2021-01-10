@@ -97,8 +97,10 @@ class Controller(polyinterface.Controller):
         blinds, rooms = client.get_blinds_and_rooms()
         
         for blind in blinds:
-            myhash =  str(int(hashlib.md5(blind.name.encode('utf8')).hexdigest(), 16) % (10 ** 8))
-            self.addNode(Blind(self,self.address,myhash,  "blind_" + str(count), client, blind, blinds ))
+            myhash =  str(int(hashlib.md5(blind.name.encode('utf8')).hexdigest(), 16) % (10 ** 8))   
+            myBlind = []
+            myBlind.append(blind)
+            self.addNode(Blind(self,self.address,myhash,  "blind_" + str(count), client, blind ))
             count = count + 1
         
     def delete(self):
@@ -134,18 +136,18 @@ class Controller(polyinterface.Controller):
 
 class Blind(polyinterface.Node):
 
-    def __init__(self, controller, primary, address, name, client, blind, blinds):
+    def __init__(self, controller, primary, address, name, client, blind):
 
         super(Blind, self).__init__(controller, primary, address, name)
         self.queryON = True
         self.client = client
         self.blind = blind
-        self.blinds = blinds
 
     def start(self):
         self.query()
 
     def setOn(self, command):
+        
         self.client.set_blinds_position(self.blind, 100)
         self.setDriver('ST', 100,True)
         
@@ -154,8 +156,8 @@ class Blind(polyinterface.Node):
         self.setDriver('ST', 0,True)
       
     def query(self):
-        states = self.client.get_blinds_state(self.blinds)
-        open = states[blinds[0].encoded_mac].position
+        states = self.client.get_blinds_state(self.blind)
+        open = states[blind[0].encoded_mac].position
         
         if open > 1 :
             self.setDriver('ST', 100,True) 
