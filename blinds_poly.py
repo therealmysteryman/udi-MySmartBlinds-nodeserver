@@ -144,7 +144,8 @@ class Blind(polyinterface.Node):
         self.blind = blind
 
     def start(self):
-        self.query()
+        self.setDriver('ST', 101,True)
+        pass
 
     def setOn(self, command):
         
