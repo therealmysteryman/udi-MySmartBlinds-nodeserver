@@ -19,7 +19,7 @@
     <nodeDef id="SMART_BLINDS" nls="MGR">
         <editors />
         <sts>
-            <st id="ST" editor="LKSTATUS" />
+            <st id="ST" editor="blindpos" />
         </sts>
         <cmds>
             <sends />
