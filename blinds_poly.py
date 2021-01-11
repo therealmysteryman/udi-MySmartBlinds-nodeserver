@@ -150,15 +150,15 @@ class Blind(polyinterface.Node):
         try :
             self.client.set_blinds_position(self.blind, 100)
             self.setDriver('ST', 100,True)
-        except HTTPError as he : # Alot of timeout error is expected with the bridge, retrying at next query
-            LOGGER.warning('HTTP Exception: %s', str(he))
+        except Exception as ex : # Alot of timeout error is expected with the bridge, retrying at next query
+            LOGGER.warning('setOn: %s', str(ex))
         
     def setOff(self, command):
         try :
             self.client.set_blinds_position(self.blind, 0)
             self.setDriver('ST', 0,True)
-        except HTTPError as he : # Alot of timeout error is expected with the bridge, retrying at next query
-            LOGGER.warning('HTTP Exception: %s', str(he))
+        except Exception as ex : # Alot of timeout error is expected with the bridge, retrying at next query
+            LOGGER.warning('setOff: %s', str(ex))
       
     def query(self):
         try :
@@ -170,8 +170,8 @@ class Blind(polyinterface.Node):
             else :
                 self.setDriver('ST', 0,True) 
                 
-        except HTTPError as he : # Alot of timeout error is expected with the bridge, retrying at next query
-             LOGGER.warning('HTTP Exception: %s', str(he))
+        except Exception as ex : # Alot of timeout error is expected with the bridge, retrying at next query
+             LOGGER.warning('Query: %s', str(ex))
                 
     drivers = [{'driver': 'ST', 'value': 0, 'uom': 79}]
 
