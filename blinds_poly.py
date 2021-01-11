@@ -145,26 +145,34 @@ class Blind(polyinterface.Node):
 
     def start(self):
         self.setDriver('ST', 101,True)
-        pass
 
     def setOn(self, command):
-        
-        self.client.set_blinds_position(self.blind, 100)
-        self.setDriver('ST', 100,True)
+        try :
+            self.client.set_blinds_position(self.blind, 100)
+            self.setDriver('ST', 100,True)
+        except HTTPError as he : # Alot of timeout error is expected with the bridge, retrying at next query
+            LOGGER.warning('HTTP Exception: %s', str(he))
         
     def setOff(self, command):
-        self.client.set_blinds_position(self.blind, 0)
-        self.setDriver('ST', 0,True)
+        try :
+            self.client.set_blinds_position(self.blind, 0)
+            self.setDriver('ST', 0,True)
+        except HTTPError as he : # Alot of timeout error is expected with the bridge, retrying at next query
+            LOGGER.warning('HTTP Exception: %s', str(he))
       
     def query(self):
-        states = self.client.get_blinds_state(self.blind)
-        open = states[self.blind[0].encoded_mac].position
-        
-        if open > 1 :
-            self.setDriver('ST', 100,True) 
-        else :
-            self.setDriver('ST', 0,True) 
-        
+        try :
+            states = self.client.get_blinds_state(self.blind)
+            open = states[self.blind[0].encoded_mac].position
+
+            if open > 1 :
+                self.setDriver('ST', 100,True) 
+            else :
+                self.setDriver('ST', 0,True) 
+                
+        except HTTPError as he : # Alot of timeout error is expected with the bridge, retrying at next query
+             LOGGER.warning('HTTP Exception: %s', str(he))
+                
     drivers = [{'driver': 'ST', 'value': 0, 'uom': 79}]
 
     id = 'SMART_BLINDS'
