@@ -5,7 +5,7 @@ https://www.tiltsmarthome.com/products/smart-hub
 
 ## Installation instructions
 
-### You can install from Polyglot V2 store or manually :
+##### You can install from Polyglot V2 store or manually :
 
 -cd ~/.polyglot/nodeservers
 -git clone https://github.com/therealmysteryman/udi-MySmartBlinds-nodeserver.git
