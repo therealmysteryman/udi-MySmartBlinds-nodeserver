@@ -1,9 +1,8 @@
-# udi-MySmartBlinds-nodeserver
+# MySmartBlinds
 
 This Poly provides an interface between MySmartBlinds and Polyglot v2 server. Only support Blind and required a Bridge. Beware the control of blind is not perfect. There connectivity issue between the bridge and blind at time.  
 https://www.tiltsmarthome.com/products/smart-hub
 
-Installation
 Installation instructions
 
 You can install from Polyglot V2 store or manually :
