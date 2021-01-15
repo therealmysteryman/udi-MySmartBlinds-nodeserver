@@ -61,7 +61,6 @@ class Controller(polyinterface.Controller):
             else:
                 self.check_profile()
                 self.discover()
-                self.query()
 
         except Exception as ex:
             LOGGER.error('Error starting Blinds NodeServer: %s', str(ex))
