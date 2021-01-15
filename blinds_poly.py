@@ -66,20 +66,17 @@ class Controller(polyinterface.Controller):
             LOGGER.error('Error starting Blinds NodeServer: %s', str(ex))
            
     def shortPoll(self):
-        pass
+        self.setDriver('ST', 1)
+        self.reportDrivers()
+        for node in self.nodes:
+            if  node != self.address and self.nodes[node].queryON == True :
+                self.nodes[node].query()
 
     def longPoll(self):
         self.heartbeat()
          for node in self.nodes:
             if self.nodes[node].queryON == True :
                 self.nodes[node].longPoll()
-
-    def query(self):
-        self.setDriver('ST', 1)
-        self.reportDrivers()
-        for node in self.nodes:
-            if self.nodes[node].queryON == True :
-                self.nodes[node].query()
 
     def heartbeat(self):
         LOGGER.debug('heartbeat: hb={}'.format(self.hb))
