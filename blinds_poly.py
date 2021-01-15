@@ -67,17 +67,20 @@ class Controller(polyinterface.Controller):
             LOGGER.error('Error starting Blinds NodeServer: %s', str(ex))
            
     def shortPoll(self):
-        self.query()
+        pass
 
     def longPoll(self):
         self.heartbeat()
+         for node in self.nodes:
+            if self.nodes[node].queryON == True :
+                self.nodes[node].longPoll()
 
     def query(self):
         self.setDriver('ST', 1)
+        self.reportDrivers()
         for node in self.nodes:
             if self.nodes[node].queryON == True :
                 self.nodes[node].query()
-            self.nodes[node].reportDrivers()
 
     def heartbeat(self):
         LOGGER.debug('heartbeat: hb={}'.format(self.hb))
@@ -159,7 +162,11 @@ class Blind(polyinterface.Node):
             self.setDriver('ST', 0,True)
         except Exception as ex : # Alot of timeout error is expected with the bridge, retrying at next query
             LOGGER.warning('setOff: %s', str(ex))
-      
+    
+    def longPoll(self):
+        # Keep connection alive
+        self.clien.login()
+    
     def query(self):
         try :
             states = self.client.get_blinds_state(self.blind)
@@ -170,6 +177,7 @@ class Blind(polyinterface.Node):
             else :
                 self.setDriver('ST', 0,True) 
                 
+            self.reportDrivers()
         except Exception as ex : # Alot of timeout error is expected with the bridge, retrying at next query
              LOGGER.warning('Query: %s', str(ex))
                 
