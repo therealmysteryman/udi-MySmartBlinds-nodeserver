@@ -74,7 +74,7 @@ class Controller(polyinterface.Controller):
 
     def longPoll(self):
         self.heartbeat()
-         for node in self.nodes:
+        for node in self.nodes:
             if self.nodes[node].queryON == True :
                 self.nodes[node].longPoll()
 
