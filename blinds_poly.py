@@ -91,14 +91,12 @@ class Controller(polyinterface.Controller):
             self.reportCmd("DOF",2)
             self.hb = 0
 
-    def discover(self, *args, **kwargs):
-        count = 1
-        
+    def discover(self, *args, **kwargs):      
         client = SmartBlindsClient(self.email,self.password)
         client.login()
-
         blinds, rooms = client.get_blinds_and_rooms()
         
+        count = 1
         for blind in blinds:
             myhash =  str(int(hashlib.md5(blind.name.encode('utf8')).hexdigest(), 16) % (10 ** 8))   
             myBlind = []
