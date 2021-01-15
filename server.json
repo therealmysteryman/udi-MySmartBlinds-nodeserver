@@ -4,8 +4,8 @@
     "type": "python3",
     "executable": "blinds_poly.py",
     "install": "install.sh",
-    "shortPoll": "60",
-    "longPoll": "300",
+    "shortPoll": "300",
+    "longPoll": "1800",
     "description": "Connect SmartBlinds to the ISY994.",
     "notice": "https://github.com/therealmysteryman/udi-MySmartBlinds-nodeserver/blob/master/LICENSE",
     "credits": [
