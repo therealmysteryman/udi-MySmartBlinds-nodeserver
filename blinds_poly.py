@@ -125,7 +125,7 @@ class Controller(polyinterface.Controller):
 
     id = 'controller'
     commands = {
-        'QUERY': query,
+        'QUERY': shortPoll,
         'DISCOVER': discover,
         'INSTALL_PROFILE': install_profile,
     }
