@@ -24,8 +24,8 @@
         <cmds>
             <sends />
             <accepts>
-                <cmd id="DON" />
-                <cmd id="DOF" />
+                <cmd id="OPEN" />
+                <cmd id="CLOSE" />
             </accepts>
         </cmds>
     </nodeDef>
