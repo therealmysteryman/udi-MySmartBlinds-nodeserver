@@ -12,8 +12,8 @@
         {
             "title": "SmartBlinds: A Polyglot v2 interface to SmartBlinds",
             "author": "AutomationGeek",
-            "version": "2.0.5",
-            "date": "January 15, 2021",
+            "version": "2.0.6",
+            "date": "January 16, 2021",
             "source": "https://github.com/therealmysteryman/udi-MySmartBlinds-nodeserver",
             "license": "https://github.com/therealmysteryman/udi-MySmartBlinds-nodeserver/blob/master/README.md"
         },
