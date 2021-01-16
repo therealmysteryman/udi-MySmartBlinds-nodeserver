@@ -179,8 +179,8 @@ class Blind(polyinterface.Node):
 
     id = 'SMART_BLINDS'
     commands = {
-                    'DON': setOn,
-                    'DOF': setOff
+                    'OPEN': setOn,
+                    'CLOSE': setOff
                 }
 
 if __name__ == "__main__":
