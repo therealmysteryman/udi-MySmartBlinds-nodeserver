@@ -13,7 +13,6 @@ import sys
 from copy import deepcopy
 from smartblinds_client import SmartBlindsClient
 
-
 LOGGER = polyinterface.LOGGER
 SERVERDATA = json.load(open('server.json'))
 VERSION = SERVERDATA['credits'][0]['version']
@@ -34,12 +33,11 @@ class Controller(polyinterface.Controller):
     def __init__(self, polyglot):
         super(Controller, self).__init__(polyglot)
         self.name = 'Blinds'
-        self.initialized = False
         self.queryON = False
         self.email = ""
         self.password = ""
-        self.tries = 0
         self.hb = 0
+        self.client  = None
 
     def start(self):
         LOGGER.info('Started Blinds for v2 NodeServer version %s', str(VERSION))
@@ -64,19 +62,20 @@ class Controller(polyinterface.Controller):
 
         except Exception as ex:
             LOGGER.error('Error starting Blinds NodeServer: %s', str(ex))
-           
+    
+    def query(self):
+        for node in self.nodes:
+            self.nodes[node].reportDrivers()
+    
     def shortPoll(self):
         self.setDriver('ST', 1)
-        self.reportDrivers()
         for node in self.nodes:
             if self.nodes[node].queryON == True :
-                self.nodes[node].query()
+                self.nodes[node].update()
 
     def longPoll(self):
         self.heartbeat()
-        for node in self.nodes:
-            if self.nodes[node].queryON == True :
-                self.nodes[node].longPoll()
+        self.client.login()
 
     def heartbeat(self):
         LOGGER.debug('heartbeat: hb={}'.format(self.hb))
@@ -88,16 +87,16 @@ class Controller(polyinterface.Controller):
             self.hb = 0
 
     def discover(self, *args, **kwargs):      
-        client = SmartBlindsClient(self.email,self.password)
-        client.login()
-        blinds, rooms = client.get_blinds_and_rooms()
+        self.client = SmartBlindsClient(self.email,self.password)
+        self.client.login()
+        blinds, rooms = self.client.get_blinds_and_rooms()
         
         count = 1
         for blind in blinds:
             myhash =  str(int(hashlib.md5(blind.name.encode('utf8')).hexdigest(), 16) % (10 ** 8))   
             myBlind = []
             myBlind.append(blind)
-            self.addNode(Blind(self,self.address,myhash,  "blind_" + str(count), client, myBlind ))
+            self.addNode(Blind(self,self.address,myhash,  "blind_" + str(count), self.client, myBlind ))
             count = count + 1
         
     def delete(self):
@@ -125,7 +124,7 @@ class Controller(polyinterface.Controller):
 
     id = 'controller'
     commands = {
-        'QUERY': shortPoll,
+        'QUERY': query,
         'DISCOVER': discover,
         'INSTALL_PROFILE': install_profile,
     }
@@ -157,11 +156,10 @@ class Blind(polyinterface.Node):
         except Exception as ex : # Alot of timeout error is expected with the bridge, retrying at next query
             LOGGER.warning('setOff: %s', str(ex))
     
-    def longPoll(self):
-        # Keep connection alive
-        self.client.login()
-    
     def query(self):
+        self.reportDrivers()
+    
+    def update(self):
         try :
             states = self.client.get_blinds_state(self.blind)
             open = states[self.blind[0].encoded_mac].position
@@ -170,8 +168,6 @@ class Blind(polyinterface.Node):
                 self.setDriver('ST', 100,True) 
             else :
                 self.setDriver('ST', 0,True) 
-                
-            self.reportDrivers()
         except Exception as ex : # Alot of timeout error is expected with the bridge, retrying at next query
              LOGGER.warning('Query: %s', str(ex))
                 
