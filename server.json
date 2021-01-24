@@ -4,16 +4,16 @@
     "type": "python3",
     "executable": "blinds_poly.py",
     "install": "install.sh",
-    "shortPoll": "300",
-    "longPoll": "3600",
+    "shortPoll": "90",
+    "longPoll": "600",
     "description": "Connect SmartBlinds to the ISY994.",
     "notice": "https://github.com/therealmysteryman/udi-MySmartBlinds-nodeserver/blob/master/LICENSE",
     "credits": [
         {
             "title": "SmartBlinds: A Polyglot v2 interface to SmartBlinds",
             "author": "AutomationGeek",
-            "version": "2.0.7",
-            "date": "January 16, 2021",
+            "version": "2.0.8",
+            "date": "January 24, 2021",
             "source": "https://github.com/therealmysteryman/udi-MySmartBlinds-nodeserver",
             "license": "https://github.com/therealmysteryman/udi-MySmartBlinds-nodeserver/blob/master/README.md"
         },
