@@ -75,7 +75,10 @@ class Controller(polyinterface.Controller):
 
     def longPoll(self):
         self.heartbeat()
-        self.client.login()
+        try:
+            self.client.login()
+        except Exception as ex : # Alot of timeout error is expected with the bridge, retrying at next query
+            LOGGER.warning('Query: %s', str(ex))
 
     def heartbeat(self):
         LOGGER.debug('heartbeat: hb={}'.format(self.hb))
